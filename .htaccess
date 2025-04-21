@@ -1,0 +1,46 @@
+# Enable compression
+<IfModule mod_deflate.c>
+  AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/x-javascript application/json
+</IfModule>
+
+# Set browser caching
+<IfModule mod_expires.c>
+  ExpiresActive On
+  ExpiresByType image/jpg "access plus 1 year"
+  ExpiresByType image/jpeg "access plus 1 year"
+  ExpiresByType image/gif "access plus 1 year"
+  ExpiresByType image/png "access plus 1 year"
+  ExpiresByType image/svg+xml "access plus 1 year"
+  ExpiresByType text/css "access plus 1 month"
+  ExpiresByType application/pdf "access plus 1 month"
+  ExpiresByType application/javascript "access plus 1 month"
+  ExpiresByType application/x-javascript "access plus 1 month"
+  ExpiresByType application/x-shockwave-flash "access plus 1 month"
+  ExpiresByType image/x-icon "access plus 1 year"
+  ExpiresDefault "access plus 2 days"
+</IfModule>
+
+# Enable Keep-Alive
+<IfModule mod_headers.c>
+  Header set Connection keep-alive
+</IfModule>
+
+# CORS Headers
+<IfModule mod_headers.c>
+  Header set Access-Control-Allow-Origin "*"
+</IfModule>
+
+# Security headers
+<IfModule mod_headers.c>
+  Header always set X-XSS-Protection "1; mode=block"
+  Header always set X-Content-Type-Options "nosniff"
+  Header always set Referrer-Policy "strict-origin-when-cross-origin"
+</IfModule>
+
+# Redirect non-www to www (uncomment if you want to use www)
+# RewriteEngine On
+# RewriteCond %{HTTP_HOST} ^images-compressor.vercel.app [NC]
+# RewriteRule ^(.*)$ https://www.images-compressor.vercel.app/$1 [L,R=301]
+
+# Error documents
+ErrorDocument 404 /404.html 
