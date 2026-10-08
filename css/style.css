@@ -141,8 +141,8 @@ header.scrolled {
 }
 
 .theme-toggle button {
-    width: 2.5rem;
-    height: 2.5rem;
+    width: 2.75rem;
+    height: 2.75rem;
     display: grid;
     place-items: center;
     border: 1px solid var(--line);
@@ -295,6 +295,7 @@ main {
 }
 
 .preset {
+    min-height: 2.75rem;
     padding: 0.45rem 0.85rem;
     border: 1px solid var(--line);
     border-radius: 999px;
@@ -616,8 +617,8 @@ footer {
 }
 
 .social-icon {
-    width: 2.25rem;
-    height: 2.25rem;
+    width: 2.75rem;
+    height: 2.75rem;
     display: grid;
     place-items: center;
     border: 1px solid var(--line);
@@ -700,6 +701,7 @@ footer {
     border-radius: 0;
     box-shadow: none;
     border-top: 1px solid var(--line);
+    overflow-wrap: anywhere;
 }
 
 .legal-section:hover {
