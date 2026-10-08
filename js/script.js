@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Update meta theme-color for browsers that support it
             const metaThemeColor = document.querySelector('meta[name="theme-color"]');
             if (metaThemeColor) {
-                metaThemeColor.setAttribute('content', newTheme === 'dark' ? '#111827' : '#6366f1');
+                metaThemeColor.setAttribute('content', newTheme === 'dark' ? '#121a17' : '#e7eeea');
             }
 
             // Animate theme transition
@@ -55,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Also update meta theme-color
         const metaThemeColor = document.querySelector('meta[name="theme-color"]');
         if (metaThemeColor) {
-            metaThemeColor.setAttribute('content', savedTheme === 'dark' ? '#111827' : '#6366f1');
+            metaThemeColor.setAttribute('content', savedTheme === 'dark' ? '#121a17' : '#e7eeea');
         }
     } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
         // If no saved preference, use system preference
@@ -63,7 +63,7 @@ document.addEventListener('DOMContentLoaded', function () {
         // Also update meta theme-color
         const metaThemeColor = document.querySelector('meta[name="theme-color"]');
         if (metaThemeColor) {
-            metaThemeColor.setAttribute('content', '#111827');
+            metaThemeColor.setAttribute('content', '#121a17');
         }
     }
 
@@ -78,145 +78,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Animate elements on load with a staggered delay
-    function animateElements() {
-        const elements = document.querySelectorAll('.hero, .hero p, .compressor, .footer-section, .feature-card');
-        elements.forEach((element, index) => {
-            setTimeout(() => {
-                element.style.opacity = '1';
-                element.style.transform = 'translateY(0)';
-            }, 200 * index);
-        });
-
-        // Add smooth hover effect to cards
-        const featureCards = document.querySelectorAll('.feature-card');
-        featureCards.forEach(card => {
-            card.addEventListener('mouseenter', function (e) {
-                const cardRect = this.getBoundingClientRect();
-                const cardCenterX = cardRect.left + cardRect.width / 2;
-                const cardCenterY = cardRect.top + cardRect.height / 2;
-                const mouseX = e.clientX;
-                const mouseY = e.clientY;
-
-                // Calculate the angle of the tilt
-                const angleX = (mouseY - cardCenterY) / 25;
-                const angleY = (cardCenterX - mouseX) / 25;
-
-                this.style.transform = `translateY(-10px) rotateX(${angleX}deg) rotateY(${angleY}deg)`;
-            });
-
-            card.addEventListener('mouseleave', function () {
-                this.style.transform = 'translateY(0) rotateX(0) rotateY(0)';
-            });
-        });
-
-        // Add badge animation
-        const badges = document.querySelectorAll('.badge');
-        badges.forEach(badge => {
-            badge.style.opacity = '0';
-            badge.style.transform = 'translateY(20px)';
-
-            setTimeout(() => {
-                badge.style.transition = 'all 0.5s ease';
-                badge.style.opacity = '1';
-                badge.style.transform = 'translateY(0)';
-            }, 1000);
-        });
-    }
-
-    // Call animateElements initially
-    animateElements();
-
-    // Re-animate on theme change
-    if (themeToggle) {
-        themeToggle.addEventListener('click', function () {
-            // The theme toggle logic is already implemented earlier
-            // We just need to add re-animation after theme change
-            setTimeout(() => {
-                // Reset and re-animate badges and feature cards
-                const badges = document.querySelectorAll('.badge');
-                badges.forEach(badge => {
-                    badge.style.transition = 'all 0.5s ease';
-                    badge.style.transform = 'translateY(0)';
-                    badge.style.opacity = '1';
-                });
-
-                const featureCards = document.querySelectorAll('.feature-card');
-                featureCards.forEach((card, index) => {
-                    setTimeout(() => {
-                        card.style.transition = 'all 0.5s ease';
-                        card.style.transform = 'translateY(0)';
-                        card.style.opacity = '1';
-                    }, 100 * index);
-                });
-            }, 300);
-        });
-    }
-
-    // Add ripple effect to buttons
-    const buttons = document.querySelectorAll('.upload-btn, .reset-btn, .download-btn');
-    buttons.forEach(button => {
-        button.addEventListener('click', function (e) {
-            const x = e.clientX - e.target.getBoundingClientRect().left;
-            const y = e.clientY - e.target.getBoundingClientRect().top;
-
-            const ripple = document.createElement('span');
-            ripple.style.position = 'absolute';
-            ripple.style.width = '100px';
-            ripple.style.height = '100px';
-            ripple.style.borderRadius = '50%';
-            ripple.style.backgroundColor = 'rgba(255, 255, 255, 0.4)';
-            ripple.style.transform = 'scale(0)';
-            ripple.style.top = `${y}px`;
-            ripple.style.left = `${x}px`;
-            ripple.style.pointerEvents = 'none';
-
-            this.style.position = 'relative';
-            this.style.overflow = 'hidden';
-            this.appendChild(ripple);
-
-            requestAnimationFrame(() => {
-                ripple.style.transition = 'transform 0.6s, opacity 0.6s';
-                ripple.style.transform = 'scale(4)';
-                ripple.style.opacity = '0';
-
-                setTimeout(() => {
-                    if (ripple && ripple.parentNode) {
-                        ripple.parentNode.removeChild(ripple);
-                    }
-                }, 700);
-            });
-        });
-    });
-
-    // Skip the image compression code if we're not on a page with the upload container
     if (!uploadContainer || !fileInput) {
-        // Add hover animation for footer links - this works on all pages
-        const footerLinks = document.querySelectorAll('.footer-links a');
-        footerLinks.forEach(link => {
-            link.addEventListener('mouseenter', function () {
-                this.style.transform = 'translateX(5px)';
-            });
-
-            link.addEventListener('mouseleave', function () {
-                this.style.transform = 'translateX(0)';
-            });
-        });
-
-        // Add animation for social icons - this works on all pages
-        const socialIcons = document.querySelectorAll('.social-icon');
-        socialIcons.forEach((icon, index) => {
-            icon.style.opacity = '0';
-            icon.style.transform = 'translateY(0)';
-            
-            setTimeout(() => {
-                icon.style.transition = 'opacity 0.5s, transform 0.5s';
-                icon.style.opacity = '1';
-                icon.style.transform = 'translateY(0)';
-            }, 1000 + (100 * index));
-        });
-
-        return; // Exit early if we're not on the main page
+        return;
     }
 
     // Create error message container
@@ -289,7 +152,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Reset the upload button
             const uploadButton = uploadContainer.querySelector('.upload-btn');
-            uploadButton.innerHTML = 'Select Image';
+            uploadButton.innerHTML = 'Select image';
             uploadButton.classList.remove('processing');
 
             // Reset the file input
@@ -329,7 +192,7 @@ document.addEventListener('DOMContentLoaded', function () {
                 // Reset the upload button
                 const uploadButton = uploadContainer.querySelector('.upload-btn');
                 if (uploadButton) {
-                    uploadButton.innerHTML = 'Select Image';
+                    uploadButton.innerHTML = 'Select image';
                     uploadButton.classList.remove('processing');
                 }
 
@@ -392,7 +255,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Reset the upload button
             const uploadButton = uploadContainer.querySelector('.upload-btn');
-            uploadButton.innerHTML = 'Select Image';
+            uploadButton.innerHTML = 'Select image';
             uploadButton.classList.remove('processing');
 
             return;
@@ -520,34 +383,10 @@ document.addEventListener('DOMContentLoaded', function () {
             // Reset the upload button
             const uploadButton = uploadContainer.querySelector('.upload-btn');
             if (uploadButton) {
-                uploadButton.innerHTML = 'Select Image';
+                uploadButton.innerHTML = 'Select image';
                 uploadButton.classList.remove('processing');
             }
         }
     }
 
-    // Add hover animation for footer links
-    const footerLinks = document.querySelectorAll('.footer-links a');
-    footerLinks.forEach(link => {
-        link.addEventListener('mouseenter', function () {
-            this.style.transform = 'translateX(5px)';
-        });
-
-        link.addEventListener('mouseleave', function () {
-            this.style.transform = 'translateX(0)';
-        });
-    });
-
-    // Add animation for social icons
-    const socialIcons = document.querySelectorAll('.social-icon');
-    socialIcons.forEach((icon, index) => {
-        icon.style.opacity = '0';
-        icon.style.transform = 'translateY(0)';
-        
-        setTimeout(() => {
-            icon.style.transition = 'opacity 0.5s, transform 0.5s';
-            icon.style.opacity = '1';
-            icon.style.transform = 'translateY(0)';
-        }, 1000 + (100 * index));
-    });
 });
