@@ -287,8 +287,41 @@ main {
     z-index: 2;
 }
 
+.presets {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.45rem;
+    margin-bottom: 0.85rem;
+}
+
+.preset {
+    padding: 0.45rem 0.85rem;
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+}
+
+.preset[aria-pressed="true"] {
+    background: var(--pine);
+    border-color: var(--pine);
+    color: #f7fbf9;
+}
+
+[data-theme="dark"] .preset[aria-pressed="true"] {
+    color: #10211c;
+}
+
 .compressor > .settings {
     margin: 0 0 1rem;
+}
+
+.file-badge {
+    margin: 0;
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    letter-spacing: -0.03em;
 }
 
 .error-message {

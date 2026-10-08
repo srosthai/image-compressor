@@ -6,10 +6,10 @@
     <meta name="google-site-verification" content="ghrRTyKnBe7lZP6ek3EavnzTJuqqb4AcY7g4QW_M9No" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description"
-        content="Shrink a JPG, PNG, WebP, or GIF in the browser. The image stays on your device. Compare the result, then download the smaller file.">
+        content="Shrink images, PDFs, spreadsheets, and documents in the browser. The file stays on your device.">
     <meta name="author" content="HE Sovannthai">
     <meta name="robots" content="index, follow">
-    <title>CompressIt — shrink an image before you send it</title>
+    <title>CompressIt — shrink a file before you send it</title>
     <link rel="icon" href="/assets/fav.svg" type="image/svg+xml">
     <meta name="theme-color" content="#e7eeea">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -50,8 +50,8 @@
     <main>
         <div class="container">
             <section class="hero">
-                <h1>Shrink an image before you send it.</h1>
-                <p>The file stays in this browser. Compare the before and after, then download a smaller JPG, PNG, WebP, or GIF.</p>
+                <h1>Shrink a file before you send it.</h1>
+                <p>The file stays in this browser. Choose a size, then download a smaller image, PDF, spreadsheet, or document.</p>
                 <div class="hero-badges">
                     <span class="badge">No account</span>
                     <span class="badge">Nothing is uploaded</span>
@@ -59,12 +59,17 @@
                 </div>
             </section>
 
-            <section class="compressor" aria-label="Image compressor">
+            <section class="compressor" aria-label="File compressor">
+                <div class="presets" role="group" aria-label="Size">
+                    <button class="preset" type="button" data-quality="55">Smaller</button>
+                    <button class="preset" type="button" data-quality="78" aria-pressed="true">Balanced</button>
+                    <button class="preset" type="button" data-quality="92">Higher quality</button>
+                </div>
                 <div class="settings">
                     <div class="setting-item">
                         <label for="qualitySlider">Quality</label>
-                        <input type="range" id="qualitySlider" min="50" max="100" value="80" class="slider">
-                        <span id="qualityValue">80%</span>
+                        <input type="range" id="qualitySlider" min="50" max="100" value="78" class="slider">
+                        <span id="qualityValue">78%</span>
                     </div>
                 </div>
                 <div class="upload-container" id="uploadContainer">
@@ -78,16 +83,16 @@
                         <polyline points="17 8 12 3 7 8"></polyline>
                         <line x1="12" y1="3" x2="12" y2="15"></line>
                     </svg>
-                    <p class="upload-text">Drop an image on this plate</p>
-                    <div class="supported-formats">JPG, PNG, WebP, GIF · up to 90 MB</div>
-                    <button class="upload-btn" type="button">Select image</button>
-                    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif" aria-label="Choose an image">
+                    <p class="upload-text">Drop a file on this plate</p>
+                    <div class="supported-formats">Images, PDF, Excel, Word, PowerPoint, CSV, and text · up to 90 MB</div>
+                    <button class="upload-btn" type="button">Select file</button>
+                    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,image/bmp,.jpg,.jpeg,.png,.webp,.gif,.bmp,.pdf,.xlsx,.xls,.csv,.docx,.pptx,.txt,.json,.xml,.svg,.html,.md" aria-label="Choose a file">
                 </div>
                 <p id="errorMessage" class="error-message" hidden></p>
 
                 <div class="loading" id="loadingIndicator" aria-live="polite">
                     <span class="spinner" aria-hidden="true"></span>
-                    <p class="loading-text">Compressing your image...</p>
+                    <p class="loading-text">Compressing this file…</p>
                 </div>
 
                 <div class="results" id="resultsContainer">
@@ -124,7 +129,7 @@
                     <p id="resultNote" class="result-note"></p>
 
                     <div class="action-buttons">
-                        <a class="download-btn" id="downloadBtn" download="compressed-image.jpg">Download image</a>
+                        <a class="download-btn" id="downloadBtn" download="compressed-file">Download file</a>
                         <button class="reset-btn" id="resetBtn" type="button">Compress another</button>
                     </div>
                 </div>
@@ -135,7 +140,7 @@
                 <div class="feature-grid">
                     <div class="feature-card">
                         <h3>Private by default</h3>
-                        <p>Compression happens on this device. The image is not sent to a server.</p>
+                        <p>Compression happens on this device. The file is not sent to a server.</p>
                     </div>
                     <div class="feature-card">
                         <h3>A preview you can judge</h3>
@@ -143,7 +148,7 @@
                     </div>
                     <div class="feature-card">
                         <h3>The formats people send</h3>
-                        <p>JPG, PNG, WebP, and GIF, including photos up to 90 MB.</p>
+                        <p>Images, PDF, Excel, Word, PowerPoint, CSV, and plain text, up to 90 MB.</p>
                     </div>
                 </div>
             </section>
@@ -154,7 +159,7 @@
         <div class="container footer-content">
             <div class="footer-section">
                 <h3 class="footer-title">CompressIt</h3>
-                <p>A browser tool for smaller images.</p>
+                <p>A browser tool for smaller files.</p>
                 <div class="app-badges">
                     <span class="app-badge">Developed by <strong>HE Sovannthai</strong></span>
                     <span class="app-badge">© 2026</span>
@@ -222,6 +227,7 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/browser-image-compression@2.0.0/dist/browser-image-compression.js"></script>
+    <script type="module" src="js/formats.js"></script>
     <script src="js/script.js"></script>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-7MJFBD4X07"></script>
     <script>
