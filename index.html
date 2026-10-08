@@ -60,6 +60,13 @@
             </section>
 
             <section class="compressor" aria-label="Image compressor">
+                <div class="settings">
+                    <div class="setting-item">
+                        <label for="qualitySlider">Quality</label>
+                        <input type="range" id="qualitySlider" min="50" max="100" value="80" class="slider">
+                        <span id="qualityValue">80%</span>
+                    </div>
+                </div>
                 <div class="upload-container" id="uploadContainer">
                     <svg class="plate-marks" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
                         <path d="M1.2 7 V1.2 H7 M93 1.2 H98.8 V7 M1.2 93 V98.8 H7 M93 98.8 H98.8 V93" fill="none" stroke="currentColor" stroke-width="1.4" vector-effect="non-scaling-stroke"></path>
@@ -74,8 +81,9 @@
                     <p class="upload-text">Drop an image on this plate</p>
                     <div class="supported-formats">JPG, PNG, WebP, GIF · up to 90 MB</div>
                     <button class="upload-btn" type="button">Select image</button>
-                    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif" aria-label="Choose an image">
+                    <input type="file" id="fileInput" accept="image/jpeg,image/png,image/webp,image/gif,.jpg,.jpeg,.png,.webp,.gif" aria-label="Choose an image">
                 </div>
+                <p id="errorMessage" class="error-message" hidden></p>
 
                 <div class="loading" id="loadingIndicator" aria-live="polite">
                     <span class="spinner" aria-hidden="true"></span>
@@ -113,14 +121,7 @@
                         <div class="stat-value" id="compressionRate">0%</div>
                         <div class="stat-label">smaller</div>
                     </div>
-
-                    <div class="settings">
-                        <div class="setting-item">
-                            <label for="qualitySlider">Quality</label>
-                            <input type="range" id="qualitySlider" min="50" max="100" value="80" class="slider">
-                            <span id="qualityValue">80%</span>
-                        </div>
-                    </div>
+                    <p id="resultNote" class="result-note"></p>
 
                     <div class="action-buttons">
                         <a class="download-btn" id="downloadBtn" download="compressed-image.jpg">Download image</a>

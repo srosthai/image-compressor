@@ -287,12 +287,20 @@ main {
     z-index: 2;
 }
 
+.compressor > .settings {
+    margin: 0 0 1rem;
+}
+
 .error-message {
-    position: relative;
-    z-index: 3;
-    margin-top: 0.8rem;
+    margin: 0.8rem 0 0;
     color: var(--danger);
     font-size: 0.95rem;
+}
+
+.result-note {
+    margin: 0.45rem 0 0;
+    max-width: 38rem;
+    color: var(--muted);
 }
 
 .loading {
