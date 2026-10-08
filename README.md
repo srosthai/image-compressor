@@ -1,39 +1,19 @@
-# CompressIt - Image Compression Tool
+# CompressIt
 
-A free online tool to compress PNG, JPG, WebP, and GIF images while maintaining quality.
+A browser tool for smaller images, PDFs, spreadsheets, documents, and text files. Files stay on the device.
 
-## SEO Setup Instructions
+The public site is [https://compress.srosthai.me/](https://compress.srosthai.me/).
 
-### 1. Submit Sitemap to Search Engines
+## Run it locally
 
-After deploying your website, submit your sitemap.xml to major search engines:
+```bash
+python3 -m http.server 8080
+```
 
-- **Google Search Console**:
-  1. Create/login to your [Google Search Console](https://search.google.com/search-console) account
-  2. Add your website property
-  3. Verify ownership using the google50917d752e962737.html file
-  4. Go to "Sitemaps" section and submit: `https://mycompressor.vercel.app/sitemap.xml`
+Open http://localhost:8080.
 
-- **Bing Webmaster Tools**:
-  1. Create/login to your [Bing Webmaster Tools](https://www.bing.com/webmasters) account
-  2. Add your website
-  3. Verify ownership
-  4. Go to "Sitemaps" section and submit: `https://mycompressor.vercel.app/sitemap.xml`
+## Search setup
 
-### 2. Register with Google Business Profile
-If applicable, create a [Google Business Profile](https://business.google.com/) to improve local search visibility.
+After deploy, submit `https://compress.srosthai.me/sitemap.xml` in [Google Search Console](https://search.google.com/search-console) and [Bing Webmaster Tools](https://www.bing.com/webmasters). Verify the property for `compress.srosthai.me`. The verification file in this repo is `google50917d752e962737.html`.
 
-### 3. Monitor Performance
-Use Google Search Console and Google Analytics to monitor your search performance and make adjustments as needed.
-
-### 4. Keep Content Updated
-Regularly update your content and fix any issues reported by search engines in their webmaster tools.
-
-## Meta Tags Explanation
-The website uses the following meta tags for SEO:
-- `title`: The page title shown in search results
-- `description`: Summary of page content shown in search results
-- `canonical`: Prevents duplicate content issues
-- `og:*`: Open Graph tags for social media sharing
-- `twitter:*`: Twitter card tags for Twitter sharing
-- JSON-LD structured data for rich search results 
+Indexable pages use a self-referencing canonical on `https://compress.srosthai.me`, Open Graph and Twitter cards, and one `h1`. The homepage includes WebApplication JSON-LD. `404.html` is `noindex` and is not in the sitemap.
