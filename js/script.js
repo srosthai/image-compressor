@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', function () {
         return;
     }
 
-    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     const maxSize = 90 * 1024 * 1024;
     let currentFile = null;
     let objectUrls = [];
@@ -108,9 +107,44 @@ document.addEventListener('DOMContentLoaded', function () {
         return `${(bytes / (1024 * 1024)).toFixed(2)} MB`;
     }
 
-    function isAllowedImage(file) {
-        if (allowedTypes.includes(file.type)) return true;
-        return /\.(jpe?g|png|webp|gif)$/i.test(file.name);
+    function fileKind(file) {
+        const name = file.name.toLowerCase();
+        if (file.type.startsWith('image/') || /\.(jpe?g|png|webp|gif|bmp)$/.test(name)) return 'image';
+        if (file.type === 'application/pdf' || name.endsWith('.pdf')) return 'pdf';
+        if (/\.(xlsx|docx|pptx)$/.test(name)) return 'office';
+        if (/\.(xls|csv|txt|json|xml|svg|html?|md)$/.test(name)) return 'data';
+        return '';
+    }
+
+    function extensionLabel(name) {
+        const match = String(name).toLowerCase().match(/\.([a-z0-9]+)$/);
+        return match ? match[1].toUpperCase() : 'FILE';
+    }
+
+    function setPreview(image, url, showImage, label) {
+        const frame = image.closest('.image-preview');
+        let badge = frame.querySelector('.file-badge');
+        if (!badge) {
+            badge = document.createElement('p');
+            badge.className = 'file-badge';
+            frame.appendChild(badge);
+        }
+        if (showImage) {
+            image.hidden = false;
+            image.src = url;
+            badge.hidden = true;
+        } else {
+            image.hidden = true;
+            image.removeAttribute('src');
+            badge.hidden = false;
+            badge.textContent = label;
+        }
+    }
+
+    function syncPresets(value) {
+        document.querySelectorAll('.preset').forEach((button) => {
+            button.setAttribute('aria-pressed', button.dataset.quality === String(value) ? 'true' : 'false');
+        });
     }
 
     function revokeObjectUrls() {
@@ -126,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
     function resetUploadButton() {
         const uploadButton = uploadContainer.querySelector('.upload-btn');
         if (!uploadButton) return;
-        uploadButton.textContent = 'Select image';
+        uploadButton.textContent = 'Select file';
         uploadButton.classList.remove('processing');
     }
 
@@ -183,17 +217,17 @@ document.addEventListener('DOMContentLoaded', function () {
         hideError();
 
         if (!file || file.size === 0) {
-            showError('That file is empty. Choose an image with content.');
+            showError('That file is empty. Choose a file with content.');
             return;
         }
 
-        if (!isAllowedImage(file)) {
-            showError('Choose a JPG, PNG, WebP, or GIF.');
+        if (!fileKind(file)) {
+            showError('Choose an image, PDF, spreadsheet, document, or text file.');
             return;
         }
 
         if (file.size > maxSize) {
-            showError('That image is over 90 MB. Choose a smaller one.');
+            showError('That file is over 90 MB. Choose a smaller one.');
             return;
         }
 
@@ -208,8 +242,13 @@ document.addEventListener('DOMContentLoaded', function () {
             revokeObjectUrls();
             hideError();
             if (resultNote) resultNote.textContent = '';
+            originalImage.hidden = false;
+            compressedImage.hidden = false;
             originalImage.removeAttribute('src');
             compressedImage.removeAttribute('src');
+            document.querySelectorAll('.file-badge').forEach((badge) => {
+                badge.hidden = true;
+            });
             downloadBtn.removeAttribute('href');
             uploadContainer.style.display = 'flex';
             resultsContainer.classList.remove('active');
@@ -221,6 +260,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (qualitySlider && qualityValue) {
         qualitySlider.addEventListener('input', () => {
             qualityValue.textContent = `${qualitySlider.value}%`;
+            syncPresets(qualitySlider.value);
         });
 
         qualitySlider.addEventListener('change', () => {
@@ -230,12 +270,19 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    async function processImage(file) {
-        if (typeof imageCompression !== 'function') {
-            showError('Compression could not start. Reload the page and try again.');
-            return;
-        }
+    document.querySelectorAll('.preset').forEach((button) => {
+        button.addEventListener('click', () => {
+            if (!qualitySlider || !qualityValue) return;
+            qualitySlider.value = button.dataset.quality;
+            qualityValue.textContent = `${qualitySlider.value}%`;
+            syncPresets(qualitySlider.value);
+            if (currentFile && resultsContainer.classList.contains('active')) {
+                processImage(currentFile);
+            }
+        });
+    });
 
+    async function processImage(file) {
         const id = ++runId;
         hideError();
         uploadContainer.style.display = 'none';
@@ -243,24 +290,51 @@ document.addEventListener('DOMContentLoaded', function () {
         loadingIndicator.classList.add('active');
         revokeObjectUrls();
 
-        const quality = qualitySlider ? Number(qualitySlider.value) / 100 : 0.8;
+        const quality = qualitySlider ? Number(qualitySlider.value) / 100 : 0.78;
+        const kind = fileKind(file);
 
         try {
-            const outputType = file.type === 'image/webp' ? 'image/webp' : 'image/jpeg';
-            const compressedFile = await imageCompression(file, {
-                maxSizeMB: Math.max(file.size / (1024 * 1024), 0.1),
-                useWebWorker: true,
-                alwaysKeepResolution: true,
-                initialQuality: quality,
-                fileType: outputType
-            });
+            let compressedFile;
+            let extraNote = '';
+
+            if (kind === 'image') {
+                if (typeof imageCompression !== 'function') {
+                    showError('Compression could not start. Reload the page and try again.');
+                    return;
+                }
+                const outputType = file.type === 'image/webp' ? 'image/webp' : 'image/jpeg';
+                compressedFile = await imageCompression(file, {
+                    maxSizeMB: Math.max(file.size / (1024 * 1024), 0.1),
+                    useWebWorker: true,
+                    alwaysKeepResolution: true,
+                    initialQuality: quality,
+                    fileType: outputType
+                });
+                const extension = outputType === 'image/webp' ? 'webp' : 'jpg';
+                const baseName = file.name.replace(/\.[^.]+$/, '');
+                downloadBtn.download = `compressed-${baseName}.${extension}`;
+            } else {
+                if (!window.fileTools) {
+                    showError('Compression could not start. Reload the page and try again.');
+                    return;
+                }
+                const result = await window.fileTools.compress(file, quality);
+                compressedFile = result.file;
+                extraNote = result.note || '';
+                downloadBtn.download = compressedFile.name;
+            }
 
             if (id !== runId) return;
 
             const originalUrl = rememberUrl(URL.createObjectURL(file));
             const compressedUrl = rememberUrl(URL.createObjectURL(compressedFile));
-            originalImage.src = originalUrl;
-            compressedImage.src = compressedUrl;
+            setPreview(originalImage, originalUrl, kind === 'image', extensionLabel(file.name));
+            setPreview(
+                compressedImage,
+                compressedUrl,
+                kind === 'image',
+                extensionLabel(compressedFile.name)
+            );
             originalSize.textContent = formatSize(file.size);
             compressedSize.textContent = formatSize(compressedFile.size);
 
@@ -268,26 +342,29 @@ document.addEventListener('DOMContentLoaded', function () {
             if (saved > 0) {
                 const reduction = (saved / file.size) * 100;
                 compressionRate.textContent = `${reduction.toFixed(1)}%`;
-                if (resultNote) resultNote.textContent = `${formatSize(saved)} removed.`;
+                if (resultNote) {
+                    resultNote.textContent = extraNote
+                        ? `${formatSize(saved)} removed. ${extraNote}`
+                        : `${formatSize(saved)} removed.`;
+                }
             } else {
                 compressionRate.textContent = '0%';
                 if (resultNote) {
-                    resultNote.textContent = 'This quality did not shrink the file. Lower the quality and it will compress again.';
+                    resultNote.textContent = extraNote || 'This quality did not shrink the file. Lower the quality and it will compress again.';
                 }
             }
 
-            const extension = outputType === 'image/webp' ? 'webp' : 'jpg';
-            const baseName = file.name.replace(/\.[^.]+$/, '');
             downloadBtn.href = compressedUrl;
-            downloadBtn.download = `compressed-${baseName}.${extension}`;
 
             loadingIndicator.classList.remove('active');
             resultsContainer.classList.add('active');
             resetUploadButton();
         } catch (error) {
             if (id !== runId) return;
-            console.error('Error compressing image:', error);
-            showError('That image could not be compressed. Try a JPG or PNG.');
+            console.error('Error compressing file:', error);
+            showError(error && error.userFacing
+                ? error.message
+                : 'That file could not be compressed. Try a different one.');
         }
     }
 
